@@ -1,0 +1,219 @@
+
+
+
+
+
+Towards Data Science
+Published in
+Towards Data Science
+
+You have 2 free member-only stories left this month. Sign up for Medium and get an extra one
+
+Vatsal
+Vatsal
+Feb 16, 2021
+
+·
+4 min read
+·
+
+Listen
+
+Support Vector Machine (SVM) Explained
+Explaining and Implementing SVM in Python
+
+Image from Splash
+Support Vector Machines (SVM) is a core algorithm used by data scientists. It can be applied for both regression and classification problems but is most commonly used for classification. It’s popularity stems from the strong accuracy and computation speed (depending on size of data) of the model. Due to the fact that SVM operate through kernels, it is excellent at solving non linear problems as well. The premise behind how SVM works is quite simple, given data plotted on a plane, this algorithm would create a line / hyperplane to separate the data into different classes.
+In continuation of my series of articles explaining and implementing core concepts in machine learning, this article will focus on giving a conceptual understanding of SVM for classification related problems.
+Table of Contents:
+What is SVM
+- Support Vectors
+- Hyperplane
+- Margin
+Advantages
+Disadvantages
+Implementation
+Conclusion
+Resources
+What is SVM
+Support Vector Machine is a supervised learning algorithm which identifies the best hyperplane to divide the dataset. There are two main terms which will be repeatedly used, here are the definitions:
+Support Vectors — the points which are closest to the hyperplane
+Hyperplane — a subspace with dimension 1 lower than its ambient space [1]. It serves to divide the space into multiple sections.
+Given a 3-dimensional space, the subsequent hyperplane would be 2-dimensional plane. Similarly, in a 2-dimensional plane, the hyperplane would be a 1-dimensional line.
+Margin — the distance between the hyperplane and the nearest data point from either side [2]
+Kernel — a mathematical function used to transform input data into a different form. Common kernel functions include linear, nonlinear, polynomial, etc.
+For a simple classification task given 2 features, you can imagine the hyperplane being a linear (1-dimensional) line separating the data. This can be visualized given the image below.
+
+Figure 1 : 2 dimensional space, 1 dimensional hyperplane dividing the data into different classes. The dotted lines represents the margin between the hyperplane and the support vectors. (Image provided by author)
+Given this image above, you can imagine that there is numerous ways to identify a hyperplane which can split the data points, which hyperplane would be the best choice? We would want to choose a hyperplane with the greatest margin between the hyperplane and all points. This would yield the greatest likelihood of new data being correctly classified [2].
+
+Figure 2 : Since there is no logical way to split the data with a hyperplane in the 2d form such that the classes are segmented, transform the data into a 3 dimensional space and identify the hyperplane (Image provided by author)
+When we’re dealing with data which has no obvious hyperplane (as seen in Figure 2), we need to shift our viewpoint into a higher dimensional space. This can be imagined as the data points either rising or falling while a plane tries to separate them into their appropriate classes. SVM allows users to choose a kernel function which best fits the data their working with. Using a kernel to map our data in a higher dimensional viewpoint will allow a hyperplane to split the data. You can learn more about kernel functions here [4].
+Advantages
+Versatile to user specific kernel functions
+Memory efficient
+Effective in cases where the number of dimensions is greater than the number of samples
+Disadvantages
+Prone to error and overfitting when dealing with noisy data (e.g. overlapping features for different labels)
+Long computation time when dealing with very large datasets
+Fails to provide a probabilistic explanation of the results [3]
+Implementation
+Conclusion
+SVM is a supervised learning algorithm which separates the data into different classes through the use of a hyperplane. The chosen hyperplane is one with the greatest margin between the hyperplane and all points, this yields the greatest likelihood of accurate classification. It’s a very versatile, memory efficient algorithm, however it’s prone to overfitting, can be computationally expensive depending on the size of the data and fails to provide a probabilistic explanation of the results.
+Resources
+[1] https://en.wikipedia.org/wiki/Hyperplane
+[2] https://www.kdnuggets.com/2016/07/support-vector-machines-simple-explanation.html
+[3] https://scikit-learn.org/stable/modules/svm.html
+[4] https://scikit-learn.org/stable/modules/svm.html#svm-kernels
+Other articles I’ve written which you might be interested in :
+Random Forest Explained
+Understanding & Implementation of Decision Tree & Random Forest
+towardsdatascience.com
+
+K Nearest Neighbours Explained
+In this article I will give a general overview, implementation, drawbacks and resources associated to the K Nearest…
+towardsdatascience.com
+
+Markov Chain Explained
+In this article I will explain and provide the python implementations of Markov chain. This article will not be a deep…
+towardsdatascience.com
+
+920
+
+
+
+
+
+
+Sign up for The Variable
+By Towards Data Science
+Every Thursday, the Variable delivers the very best of Towards Data Science: from hands-on tutorials and cutting-edge research to original features you don't want to miss. Take a look.
+
+
+Get this newsletter
+More from Towards Data Science
+Follow
+Your home for data science. A Medium publication sharing concepts, ideas and codes.
+
+Kenneth Leung
+Kenneth Leung
+
+·Feb 16, 2021
+
+Visualizing Fortune 500 Companies in a Bar Chart Race
+Using Python and Flourish to visualize rank and revenue trends of the world’s largest companies — Companies rise and fall amidst the intense and ruthless global competition, thus it would be fascinating to visualize the progress of the top global firms over the past few decades. The Fortune Global 500 is an annual ranking of the top 500 corporations worldwide as measured by revenue, and it…
+
+Data Science
+7 min read
+
+Visualizing Fortune 500 Companies in a Bar Chart Race
+Share your ideas with millions of readers.
+
+Write on Medium
+Reslley Gabriel
+Reslley Gabriel
+
+·Feb 16, 2021
+
+Dynamic Pricing using Reinforcement Learning and Neural Networks
+An intelligent system that can increase e-commerce sales and profits, awarded by Correlation One and Softbank as one of the top three projects in their Data Science program. — The main goal of this project was to develop a dynamic pricing system to increase e-commerce profits by adapting to supply and demand levels. The pricing system should be able to manipulate a product’s final price in a robust and timely manner, reacting to offer and demand fluctuations in a…
+
+Dynamic Pricing
+5 min read
+
+Dynamic Pricing using Reinforcement Learning and Neural Networks
+Ioannis Tsamardinos
+Ioannis Tsamardinos
+
+·Feb 16, 2021
+
+AutoML vs HPO vs CASH: what is the difference?
+AutoML will gradually replace functionalities that a human expert analyst would provide but go beyond just delivering a predictive model — Automated Machine Learning, or AutoML for short, is on the rise. More and more commercial products appear on the market, academic tools, and public, open-source AutoML libraries. As with every new technology that is new, unclear, and nebulously defined, AutoML is misunderstood. On one end, there are grandiose claims that…
+
+Automl
+8 min read
+
+AutoML vs HPO vs CASH: what is the difference?
+Gregg Saldutti
+Gregg Saldutti
+
+·Feb 16, 2021
+
+Named Entity Recognition and Geocoding with R
+A quick guide to finding and geolocating place names in historic (or contemporary) texts — The digital humanities has many uses for technology and GIS applications for analysis of historic (and contemporary) works. In addition to open-source software, open-source data allows greater accessibility for analysts. In this post I will introduce and provide a brief guide to named entity recognition (NER) and geocoding in Rstats…
+
+NLP
+8 min read
+
+Quick guide to Entity Recognition and geocoding with R
+Konrad Hafen
+Konrad Hafen
+
+·Feb 16, 2021
+
+Remote Sensing with QGIS: Calculate NDVI
+This could be the most-used remote sensing index — Vegetation indices are a staple remote sensing product and the normalized difference vegetation index (NDVI) may be the most widely used vegetation index. To calculate NDVI you simply need appropriate imagery and a program that allows you to interact with the image data. …
+
+Remote Sensing
+6 min read
+
+Remote Sensing with QGIS: Calculate NDVI
+Read more from Towards Data Science
+More from Medium
+
+Predicting Flight Delays
+Flight delays have become an important subject and problem for air transportation systems all over the world. The aviation industry is…
+
+Analyzing Reddit communities with Python — Part 5: topic modeling
+
+Integrating Datadog with SignifAI’s Artificial Intelligence and Machine Learning
+
+SQL for Stock Market Analysis
+Comparing close prices with WINDOW functions
+
+How Predictive Analytics will Revolutionize Business | Seamgen Blog
+
+A Look at Trump’s 2019 Tweets
+President Donald Trump is known to tweet a lot. This blog will look at Trump’s tweeting habits in 2019.
+
+Choosing Where to Live/Invest.— A Foursquare — Python Experiment.
+
+Rethinking ESG: Towards centralized and free ESG data thanks to a collaborative approach
+Get started
+Sign In
+
+Search
+Vatsal
+Vatsal
+221 Followers
+
+Machine Learning Engineer https://www.linkedin.com/in/vatsal-p-a57978149/
+
+Follow
+
+Related
+
+An Exhaustive Guide to Decision Tree Classification in Python 3.x
+
+Analyzing “Tucker Carlson Tonight” With Machine Learning
+
+Mnist handwritten digit classification using tensorflow
+
+Hyper-parameter tuning for scikit-learn ML models
+Help
+
+Status
+
+Writers
+
+Blog
+
+Careers
+
+Privacy
+
+Terms
+
+About
+
+Knowable

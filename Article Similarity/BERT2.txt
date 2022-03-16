@@ -1,0 +1,268 @@
+
+
+
+
+
+Towards Data Science
+Published in
+Towards Data Science
+
+You have 2 free member-only stories left this month. Sign up for Medium and get an extra one
+
+James Briggs
+James Briggs
+Jul 6, 2021
+
+·
+7 min read
+·
+
+Listen
+
+How to Train a BERT Model From Scratch
+Meet BERT’s Italian cousin, FiliBERTo
+
+BERT, but in Italy — image by author
+Many of my articles have been focused on BERT — the model that came and dominated the world of natural language processing (NLP) and marked a new age for language models.
+For those of you that may not have used transformers models (eg what BERT is) before, the process looks a little like this:
+pip install transformers
+Initialize a pre-trained transformers model — from_pretrained.
+Test it on some data.
+Maybe fine-tune the model (train it some more).
+Now, this is a great approach, but if we only ever do this, we lack the understanding behind creating our own transformers models.
+And, if we cannot create our own transformer models — we must rely on there being a pre-trained model that fits our problem, this is not always the case:
+
+A few comments asking about non-English BERT models
+So in this article, we will explore the steps we must take to build our own transformer model — specifically a further developed version of BERT, called RoBERTa.
+An Overview
+There are a few steps to the process, so before we dive in let’s first summarize what we need to do. In total, there are four key parts:
+Getting the data
+Building a tokenizer
+Creating an input pipeline
+Training the model
+Once we have worked through each of these sections, we will take the tokenizer and model we have built — and save them both so that we can then use them in the same way we usually would with from_pretrained.
+Getting The Data
+As with any machine learning project, we need data. In terms of data for training a transformer model, we really are spoilt for choice — we can use almost any text data.
+Video walkthrough for downloading OSCAR dataset using HuggingFace’s datasets library
+And, if there’s one thing that we have plenty of on the internet — it’s unstructured text data.
+One of the largest datasets in the domain of text scraped from the internet is the OSCAR dataset.
+The OSCAR dataset boasts a huge number of different languages — and one of the clearest use-cases for training from scratch is so that we can apply BERT to some less commonly used languages, such as Telugu or Navajo.
+Unfortunately, the only language I can speak with any degree of competency is English — but my girlfriend is Italian, and so she — Laura, will be assessing the results of our Italian-speaking BERT model — FiliBERTo.
+So, to download the Italian segment of the OSCAR dataset we will be using HuggingFace’s datasets library — which we can install with pip install datasets. Then we download OSCAR_IT with:
+Let’s take a look at the dataset object.
+Great, now let’s store our data in a format that we can use when building our tokenizer. We need to create a set of plaintext files containing just the text feature from our dataset, and we will split each sample using a newline \n.
+Over in our data/text/oscar_it directory we will find:
+A screenshot displaying a Windows explorer window full of .txt files — representing the plaintext OSCAR data
+The directory containing our plaintext OSCAR files
+Building a Tokenizer
+Next up is the tokenizer! When using transformers we typically load a tokenizer, alongside its respective transformer model — the tokenizer is a key component in the process.
+Video walkthrough for building our custom tokenizer
+When building our tokenizer we will feed it all of our OSCAR data, specify our vocabulary size (number of tokens in the tokenizer), and any special tokens.
+Now, the RoBERTa special tokens look like this:
+So, we make sure to include them within the special_tokens parameter of our tokenizer’s train method call.
+Our tokenizer is now ready, and we can save it file for later use:
+Now we have two files that define our new FiliBERTo tokenizer:
+merges.txt — performs the initial mapping of text to tokens
+vocab.json — maps the tokens to token IDs
+And with those, we can move on to initializing our tokenizer so that we can use it as we would use any other from_pretrained tokenizer.
+Initializing the Tokenizer
+We first initialize the tokenizer using the two files we built before — using a simple from_pretrained:
+Now our tokenizer is ready, we can try encoding some text with it. When encoding we use the same two methods we would typically use, encode and encode_batch.
+From the encodings object tokens we will be extracting the input_ids and attention_mask tensors for use with FiliBERTo.
+Creating the Input Pipeline
+The input pipeline of our training process is the more complex part of the entire process. It consists of us taking our raw OSCAR training data, transforming it, and loading it into a DataLoader ready for training.
+Video walkthrough of the MLM input pipeline
+Preparing the Data
+We’ll start with a single sample and work through the preparation logic.
+First, we need to open our file — the same files that we saved as .txt files earlier. We split each based on newline characters \n as this indicates the individual samples.
+Then we encode our data using the tokenizer — making sure to include key parameters like max_length, padding, and truncation.
+And now we can move onto creating our tensors — we will be training our model through masked-language modeling (MLM). So, we need three tensors:
+input_ids — our token_ids with ~15% of tokens masked using the mask token <mask>.
+attention_mask — a tensor of 1s and 0s, marking the position of ‘real’ tokens/padding tokens — used in attention calculations.
+labels — our token_ids with no masking.
+If you’re not familiar with MLM, I’ve explained it here.
+Our attention_mask and labels tensors are simply extracted from our batch. The input_ids tensors require more attention however, for this tensor we mask ~15% of the tokens — assigning them the token ID 3.
+In the final output, we can see part of an encoded input_ids tensor. The very first token ID is 1 — the [CLS] token. Dotted around the tensor we have several 3 token IDs — these are our newly added [MASK] tokens.
+Building the DataLoader
+Next, we define our Dataset class — which we use to initialize our three encoded tensors as PyTorch torch.utils.data.Dataset objects.
+Finally, our dataset is loaded into a PyTorch DataLoader object — which we use to load our data into our model during training.
+Training the Model
+We need two things for training, our DataLoader and a model. The DataLoader we have — but no model.
+Initializing the Model
+For training, we need a raw (not pre-trained) BERTLMHeadModel. To create that, we first need to create a RoBERTa config object to describe the parameters we’d like to initialize FiliBERTo with.
+Then, we import and initialize our RoBERTa model with a language modeling (LM) head.
+Training Preparation
+Before moving onto our training loop we need to set up a few things. First, we set up GPU/CPU usage. Then we activate the training mode of our model — and finally, initialize our optimizer.
+Training
+Finally — training time! We train just as we usually would when training via PyTorch.
+If we head on over to Tensorboard we’ll find our loss over time — it looks promising.
+
+Loss / time — multiple training sessions have been threaded together in this chart
+The Real Test
+Now it’s time for the real test. We set up an MLM pipeline — and ask Laura to assess the results. You can watch the video review at 22:44 here:
+We first initialize a pipeline object, using the 'fill-mask' argument. Then begin testing our model like so:
+“ciao come va?” is the right answer! That’s as advanced as my Italian gets — so, let’s hand it over to Laura.
+We start with “buongiorno, come va?” — or “good day, how are you?”:
+The first answer, “buongiorno, chi va?” means “good day, who is there?” — eg nonsensical. But, our second answer is correct!
+Next up, a slightly harder phrase, “ciao, dove ci incontriamo oggi pomeriggio?” — or “hi, where are we going to meet this afternoon?”:
+And we return some more positive results:
+✅ "hi, where do we see each other this afternoon?"
+✅ "hi, where do we meet this afternoon?"
+❌ "hi, where here we are this afternoon?"
+✅ "hi, where are we meeting this afternoon?"
+✅ "hi, where do we meet this afternoon?"
+Finally, one more, harder sentence, “cosa sarebbe successo se avessimo scelto un altro giorno?” — or “what would have happened if we had chosen another day?”:
+We return a few good more good answers here too:
+✅ "what would have happened if we had chosen another day?"
+✅ "what would have happened if I had chosen another day?"
+✅ "what would have happened if they had chosen another day?"
+✅ "what would have happened if you had chosen another day?"
+❌ "what would have happened if another day was chosen?"
+Overall, it looks like our model passed Laura’s tests — and we now have a competent Italian language model called FiliBERTo!
+That’s it for this walkthrough of training a BERT model from scratch!
+We’ve covered a lot of ground, from getting and formatting our data — all the way through to using language modeling to train our raw BERT model.
+I hope you enjoyed this article! If you have any questions, let me know via Twitter or in the comments below. If you’d like more content like this, I post on YouTube too.
+Thanks for reading!
+🤖 70% Discount on the NLP With Transformers Course
+*All images are by the author except where stated otherwise
+336
+
+
+4
+
+
+
+
+
+Sign up for The Variable
+By Towards Data Science
+Every Thursday, the Variable delivers the very best of Towards Data Science: from hands-on tutorials and cutting-edge research to original features you don't want to miss. Take a look.
+
+
+Get this newsletter
+More from Towards Data Science
+Follow
+Your home for data science. A Medium publication sharing concepts, ideas and codes.
+
+Christianlauer
+Christianlauer
+
+·Jul 6, 2021
+
+Working with Times and Dates in BigQuery
+What you have to know — Who is not familiar with this situation? What was that thing again with the correct timestamp format? Just google it and next time it will end so again. …
+
+Data Science
+3 min read
+
+Working with Times and Dates in BigQuery
+Share your ideas with millions of readers.
+
+Write on Medium
+Robert McKeon Aloe
+Robert McKeon Aloe
+
+·Jul 6, 2021
+
+The Frequency of God-Shots
+Looking at the weekly variations in the great espresso — When people get introduced to home espresso, they often get sucked in. It’s kind of like heroin; it’s addictive. The process, the aroma, the coffee. So often, people are looking for the God-Shot, which tastes better than anything you’ve ever had. The God-Shot is so good, you didn’t even know…
+
+Coffee Data Science
+4 min read
+
+The Frequency of God-Shots
+Prakhar Mishra
+Prakhar Mishra
+
+·Jul 6, 2021
+
+Creating an Image Classification Slackbot in Python
+Slackbot tutorial with Code in Python — Chatbots are softwares that are programmed to have a conversation with humans around some theme with a motive to achieve a defined goal. They can help us automate any particular task or trigger a general chit-chat allowing the communication medium to be either text or voice. Some of the popular…
+
+Artificial Intelligence
+4 min read
+
+Creating an Image Classification Slackbot in Python
+David Farrugia
+David Farrugia
+
+·Jul 6, 2021
+
+From Data to Decisions
+Understanding the need for Explainable AI — It’s no secret. Everybody knows. Our lives today are entirely driven by Artificial Intelligence (AI). From email spam filters to virtual personal assistants, every aspect of our life is controlled by an algorithm. We even leave our love life in the hands of an algorithm running under some dating app…
+
+Artificial Intelligence
+4 min read
+
+From Data to Decisions
+Gopika S R
+Gopika S R
+
+·Jul 6, 2021
+
+Object localization using pre-trained CNN models such as MobileNet, ResNet & Xception
+Object localization to locate animal faces in an image from the Oxford Pet Dataset using different Pre-trained CNN Models — This work will introduce you to single object localization using pre-trained CNN and a few additional interesting adaptations to find the best performing model in them according to the context. Let's start by explaining localization. In simple words, to locate an object in an image. Localization means entailing an object…
+
+Object Localization
+12 min read
+
+Object localization using pre-trained CNN models such as MobileNet, ResNet & Xception
+Read more from Towards Data Science
+More from Medium
+
+Model Deployment — Do Data Scientists Really Care?
+
+Genre Classification using CNN
+1. Introduction
+
+Flowers
+Learn about how to differentiate flowers using AI and CNNs!
+
+The Application of Text Augmentation for ML Projects
+
+A Beginners Guide to Computer Vision (Part 3)- Harris Interest Point Detection
+
+How to create a Model a Recommender System as good as Netflix’s, with 19 Lines of Code?
+
+Real-time Object Detection using SSD MobileNet V2 on Video Streams
+
+Computer Vision 101: Working with Color Images in Python
+Get started
+Sign In
+
+Search
+James Briggs
+James Briggs
+6.3K Followers
+
+Freelance ML engineer learning and writing about everything.
+
+Follow
+
+Related
+
+Text Classification with BERT in PyTorch
+How to leverage a pre-trained BERT model from Hugging Face to classify text of news articles
+source: arXiv:1706.03762.
+An out-and-out view of Transformer Architecture
+
+Fine-tune a RoBERTa Encoder-Decoder model trained on MLM for Text Generation
+Figure 1 — NOR-to-Queue mapping example
+A self-improving model using partially annotated data
+Help
+
+Status
+
+Writers
+
+Blog
+
+Careers
+
+Privacy
+
+Terms
+
+About
+
+Knowable

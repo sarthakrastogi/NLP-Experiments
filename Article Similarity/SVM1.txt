@@ -1,0 +1,272 @@
+
+
+
+
+
+Towards Data Science
+Published in
+Towards Data Science
+
+You have 2 free member-only stories left this month. Sign up for Medium and get an extra one
+
+Marco Peixeiro
+Marco Peixeiro
+Jul 29, 2019
+
+·
+7 min read
+·
+
+Listen
+
+The Complete Guide to Support Vector Machine (SVM)
+Understand its inner workings and implement SVMs in four different scenarios
+
+What would we do without sklearn?
+Introduction
+We have seen how to approach a classification problem with logistic regression, LDA, and decision trees. Now, yet another tool is introduced for classification: support vector machine.
+The support vector machine is a generalization of a classifier called maximal margin classifier. The maximal margin classifier is simple, but it cannot be applied to the majority of datasets, since the classes must be separated by a linear boundary.
+That is why the support vector classifier was introduced as an extension of the maximal margin classifier, which can be applied in a broader range of cases.
+Finally, support vector machine is simply a further extension of the support vector classifier to accommodate non-linear class boundaries.
+It can be used for both binary or multiclass classification.
+Explaining the theory of SVMs can get very technical. Hopefully, this article will make it easy to understand how SVMs work.
+Once the theory is covered, you will get to implement the algorithm in four different scenarios!
+Without further due, let’s get to it.
+For hands-on video tutorials on machine learning, deep learning, and artificial intelligence, checkout my YouTube channel.
+There are no SVM gifs.. so I had to settle for a ‘machine’ gif
+Maximal Margin Classifier
+This method relies on separating classes using a hyperplane.
+What is a hyperplane?
+In a p-dimensional space, a hyperplane is a flat affine subspace of dimension p-1. Visually, in a 2D space, the hyperplane will be a line, and in a 3D space, it will be a flat plane.
+Mathematically, the hyperplane is simply:
+
+General hyperplane equation
+If X satisfies the equation above, then the point lies on the plane. Otherwise, it must be on one side of the plane as shown below.
+
+The line represents a hyperplane in a 2D space. Points that satisfy the equation above will lie on the line, while others are on one side of the plane.
+In general, if the data can be perfectly separated using a hyperplane, then there is an infinite number of hyperplanes, since they can be shifted up or down, or slightly rotated without coming into contact with an observation.
+That is why we use the maximal margin hyperplane or optimal separating hyperplane which is the separating hyperplane that is farthest from the observations. We calculate the perpendicular distance from each training observation given a hyperplane. This is known as the margin. Hence, the optimal separating hyperplane is the one with the largest margin.
+
+Example of a maximal margin hyperplane
+As you can see above, there three points that are equidistant from the hyperplane. Those observations are known as support vectors, because if their position shifts, the hyperplane shifts as well. Interestingly, this means that the hyperplane depends only on the support vectors, and not on any other observations.
+What if no separating plane exists?
+
+Overlapping classes where no separating hyperplane exists
+In this case, there is no maximal margin classifier. We use a support vector classifier that can almost separate the classes using a soft margin called support vector classifier. However, further discussing this method gets very technical, and since it is not the most ideal approach, we will skip this subject for now.
+Support vector machine (SVM)
+The support vector machine is an extension of the support vector classifier that results from enlarging the feature space using kernels. The kernel approach is simply an efficient computational approach for accommodating a non-linear boundary between classes.
+Without going into technical details, a kernel is a function that quantifies the similarity of two observations. The kernel can be of any degree. Using a kernel with degree greater than one leads to a more flexible decision boundary as shown below.
+
+Example of classification with SVM
+To better understand how the choice of kernel can impact the SVM algorithm, let’s implement it in four different scenarios.
+Project
+This project is divided in four mini projects.
+The first part will show how to perform classification with a linear kernel and how the regularization parameter C impacts the resulting hyperplane.
+Then, the second part will show how to work with a Gaussian kernel to generate a non-linear hyperplane.
+The third part simulates overlapping classes and we will use cross-validation to find the best parameters for the SVM.
+Finally, we perform a very simple spam classifier using SVM.
+The exercises above were taken from Andrew Ng’ course available for free on Coursera. I simply solve them with Python, which is not recommended by the instructor. Still, I highly recommend the course for any beginners.
+As always, the notebook and data are available here.
+Mini project 1 — SVM with linear kernel
+Before we get started, let’s import some useful libraries:
+
+Notice that we import loadmat here, because our data is in a matrix form.
+Then, we store the paths to our datasets in different variables:
+
+Finally, we will build a function to help us plot each dataset quickly:
+
+Perfect!
+Now, in this part, we will implement a support vector machine using a linear kernel, and we will see how the regularization parameter can impact the hyperplane.
+First, let’s load and visualize the data:
+
+And you should see:
+
+Notice in the plot above the presence of an outlier on the left side. Let’s see how the regularization parameter will impact the hyperplane when in presence of an outlier.
+
+The code block above simply fits a SVM to the data, and we use the predictions to plot the hyperplane. Notice that we use a regularization parameter of 1. The result should be the following:
+
+Hyperplane with C=1
+As you can see, the hyperplane ignored the outlier. Therefore, a low regularization parameter will be generalize better. The test error will usually be higher than the cross-validation error.
+Now, let’s increase the regularization parameter:
+
+And you get:
+
+Hyperplane with C=100
+Now, the outlier is on the right side of the hyperplane, but it also means that we are overfitting. Ultimately, this boundary would not perform well on unobserved data.
+Mini project 2 — SVM with Gaussian kernel
+Now, we know that to accommodate non-linear boundaries, we need to change the kernel function. In this exercise, we will make use of a Gaussian kernel.
+First, let’s plot our data:
+
+And you should see:
+
+Before implementing the SVM, you should know that the Gaussian kernel is expressed as:
+
+Gaussian kernel function
+Notice that there is a parameter sigma that determines how fast the similarity metric goes to zero as they are further apart.
+Therefore, we implement it with the following code:
+
+And you should get the following hyperplane:
+
+Non-linear hyperplane with a Gaussian kernel
+Amazing! The hyperplane is not a perfect boundary, but it did a pretty good job at classifying most of the data. I suggest you try different values of sigma to see how it impacts the hyperplane.
+Mini project 3 — SVM with cross-validation
+Cross-validation is essential to choose the best tuning parameters for optimal performance from our model. Let’s see how can apply that to SVMs.
+Of course, let’s see what the data looks like for this exercise:
+
+And you get:
+
+Notice that we have overlapping classes. Of course, our hyperplane will not be perfect, but we will use cross-validation to make sure it is the best we can get:
+
+From the code cell above, you should get that the best regularization parameter is 1, and that sigma should be 0.1. Using these values, we can generate the hyperplane:
+
+And get:
+
+Hyperplane with C=1 and sigma=0.1
+Mini project 4 — Spam classification with SVM
+Finally, we train a spam classifier with a SVM. In this case, we will use a linear kernel. Also, we have separate datasets for training and testing, which will make our analysis a bit easier.
+
+And you see that we get a training accuracy of 99.825%, and a test accuracy of 98.9%!
+That’s it! You learned the inner working of support vector machines and you implemented the algorithm in four different mini projects to understand how the choice of kernel impacts the algorithm, and how to work with cross-validation.
+I hope you found this article useful and that you will come back to it whenever you feel like implementing an SVM.
+Cheers!
+242
+
+
+
+
+
+
+Sign up for The Variable
+By Towards Data Science
+Every Thursday, the Variable delivers the very best of Towards Data Science: from hands-on tutorials and cutting-edge research to original features you don't want to miss. Take a look.
+
+
+Get this newsletter
+More from Towards Data Science
+Follow
+Your home for data science. A Medium publication sharing concepts, ideas and codes.
+
+Trevor Phillips
+Trevor Phillips
+
+·Jul 29, 2019
+
+Exercise Classification with Machine Learning (Part II)
+In this two-part post we’re taking a deep dive into a specific problem: classifying videos of people performing various exercises. — In the last post, we focused on a more algorithmic approach using k-Nearest Neighbors to classify an unknown video. In this post, we’ll look at an exclusively machine learning (ML) approach. Code for everything we’re going to cover can be found on this GitHub repository. The algorithmic approach (Part I)…
+
+Machine Learning
+6 min read
+
+Exercise Classification with Machine Learning (Part II)
+Share your ideas with millions of readers.
+
+Write on Medium
+Trevor Phillips
+Trevor Phillips
+
+·Jul 29, 2019
+
+Exercise Classification with Machine Learning (Part I)
+In this two-part post we’re taking a deep dive into a specific problem: classifying videos of people performing various exercises. The first post will focus on a more algorithmic approach using k-Nearest Neighbors to classify an unknown video, and in the second post, we’ll look at an exclusively machine learning…
+
+Machine Learning
+8 min read
+
+Exercise Classification with Machine Learning (Part I)
+Matthew Stewart, PhD Researcher
+Matthew Stewart, PhD Researcher
+
+·Jul 29, 2019
+
+The Limitations of Machine Learning
+Machine learning is now seen as a silver bullet for solving all problems, but sometimes it is not the answer. — “If a typical person can do a mental task with less than one second of thought, we can probably automate it using AI either now or in the near future.” — Andrew Ng Most people reading this are likely familiar with machine learning and the relevant algorithms used to classify…
+
+Machine Learning
+12 min read
+
+The Limitations of Machine Learning
+Jason Zivkovic
+Jason Zivkovic
+
+·Jul 29, 2019
+
+Building a Linear Regression Model in R to Predict AFL Crowds
+Introduction There is a lot of talk about crowd behaviour and crowd issues with the modern day AFL. …
+
+Data Science
+15 min read
+
+Building a Linear Regression Model in R to Predict AFL Crowds
+Xu LIANG
+Xu LIANG
+
+·Jul 29, 2019
+
+What is Two-Stream Self-Attention in XLNet
+Understand the Two-Stream Self-Attention in XLNet intuitively — In my previous post What is XLNet and why it outperforms BERT, I mainly talked about the difference between XLNet (AR language model) and BERT (AE language model) and the Permutation Language Modeling. I believe that having an intuitive understanding of XLNet is far important than the implementation detail, so…
+
+Machine Learning
+8 min read
+
+What is Two-Stream Self-Attention in XLNet
+Read more from Towards Data Science
+More from Medium
+
+Use torchtext and Transformer to create your quote language model step by step !
+
+ML Series5: Ensemble Learning
+🔥The most popular category of modern learning algorithms
+
+RNNs: The Trade-Off Between Long-Term Memory and Smoothness
+
+Machine Learning in the Enterprise: Lessons from the Front Lines
+
+Starting Point for Beginners in Natural Language Processing
+
+ANN
+Artificial Neural Network is one of the most beautiful and basic concepts of Supervised Deep Learning. It can be used to perform multiple…
+
+Efficiently detect 3D objects in 2D range image with graph convolution kernels
+
+Detect people in top-view, fish-eye images with ARPD
+Get started
+Sign In
+
+Search
+Marco Peixeiro
+Marco Peixeiro
+2.8K Followers
+
+Web developer, data scientist, and athlete. What a mix!
+
+Follow
+
+Related
+
+10 Exciting Examples of Machine Learning Applications in Healthcare
+
+A Complete Guide to Linear Regression
+Covering all the fundamentals of Linear Regression
+
+Support Vector Machine: Theory and Practice
+Understand SVM, one of the most robust ML algorithms out there
+
+Precision and Recall Made Simple
+Making precision and recall easy to understand with simple example, step-by-step explanation and animated GIFs
+Help
+
+Status
+
+Writers
+
+Blog
+
+Careers
+
+Privacy
+
+Terms
+
+About
+
+Knowable
