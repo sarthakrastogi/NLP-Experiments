@@ -72,28 +72,3 @@ Before moving onto our training loop we need to set up a few things. First, we s
 Training
 Finally — training time! We train just as we usually would when training via PyTorch.
 If we head on over to Tensorboard we’ll find our loss over time — it looks promising.
-
-Loss / time — multiple training sessions have been threaded together in this chart
-The Real Test
-Now it’s time for the real test. We set up an MLM pipeline — and ask Laura to assess the results. You can watch the video review at 22:44 here:
-We first initialize a pipeline object, using the 'fill-mask' argument. Then begin testing our model like so:
-“ciao come va?” is the right answer! That’s as advanced as my Italian gets — so, let’s hand it over to Laura.
-We start with “buongiorno, come va?” — or “good day, how are you?”:
-The first answer, “buongiorno, chi va?” means “good day, who is there?” — eg nonsensical. But, our second answer is correct!
-Next up, a slightly harder phrase, “ciao, dove ci incontriamo oggi pomeriggio?” — or “hi, where are we going to meet this afternoon?”:
-And we return some more positive results:
-✅ "hi, where do we see each other this afternoon?"
-✅ "hi, where do we meet this afternoon?"
-❌ "hi, where here we are this afternoon?"
-✅ "hi, where are we meeting this afternoon?"
-✅ "hi, where do we meet this afternoon?"
-Finally, one more, harder sentence, “cosa sarebbe successo se avessimo scelto un altro giorno?” — or “what would have happened if we had chosen another day?”:
-We return a few good more good answers here too:
-✅ "what would have happened if we had chosen another day?"
-✅ "what would have happened if I had chosen another day?"
-✅ "what would have happened if they had chosen another day?"
-✅ "what would have happened if you had chosen another day?"
-❌ "what would have happened if another day was chosen?"
-Overall, it looks like our model passed Laura’s tests — and we now have a competent Italian language model called FiliBERTo!
-That’s it for this walkthrough of training a BERT model from scratch!
-We’ve covered a lot of ground, from getting and formatting our data — all the way through to using language modeling to train our raw BERT model.
