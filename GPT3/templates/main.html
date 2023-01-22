@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+      <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+      <title>Kanban App</title>
+   </head>
+   <body>
+      <div class="container" id="kanbanapp">
+         <div class="row">
+               <p>
+               <h1 class="text-center">Kanban Board</h1>
+              <hr>
+
+         </div>
+         <div class="row">
+            <div class="col-xl">
+               <div>
+                  <b-button class="btn btn-dark" @click="showModal('email-creation')">New Email</b-button>
+                  <b-button class="btn btn-dark" @click="showModal('jobdesc-creation')">New Job Description</b-button>
+                  <b-modal ref="email-creation" hide-footer title="Add email">
+                     <div>
+                        <form action="" @submit.prevent="email_addition_button">
+                           <p>
+                              <label>Recipient's name</label>
+                              <input type="text" v-model="name">
+                           <p>
+                              <label>Subject</label>
+                              <input type="text" v-model="subject">
+                           <p>
+                              <label>Write an email on the topic </label>
+
+                              <input type="text" v-model="email_prompt">
+                              <div class="alert alert-warning">
+                                <strong>Include relevant details about the job or the hiring process here.</strong>
+                              </div>
+                           <p>
+                              <button class="btn btn-dark">Write email</button>
+                           <p>
+                        </form>
+                     </div>
+                  </b-modal>
+               </div>
+            </div>
+         </div>
+         <div>
+
+            <b-modal ref="jobdesc-creation" hide-footer title="Add Job Desc">
+               <div>
+                  <form action="" @submit.prevent="jobdesc_addition_button">
+                     <p>
+                        <label>Job title</label>
+                        <input type="text" v-model="job_title">
+                     <p>
+                       <label>Job responsibilities</label>
+                       <input type="text" v-model="job_responsibilities">
+                    <p>
+                      <label>Job requirements</label>
+                      <input type="text" v-model="job_requirements">
+                   <p>
+                        <button class="btn btn-dark">Add job desc.</button>
+                     <p>
+                  </form>
+               </div>
+            </b-modal>
+         </div>
+
+
+         <div class="row">
+            <div class="col-xl">
+                  <table class="table table-bordered">
+                     <thead>
+                        <tr>
+                           <th><b>Emails</b></th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr v-for="(email, i) in emails">
+
+                           <td>
+                              <b>To: </b>{email[1]}
+                              <p><b>Subject: </b>{email[2]}
+                              <p><b>Prompt: </b>{email[3]}
+                              <p><b>Result: </b>{email[4]}
+                              <p><small>Created at </b>{email[6]}</small>
+                              <p>
+                                 <button class="btn btn-dark" @click="deleteTask(email[0], 'email')" class="btn btn-sm btn-outline-danger">Delete</button>
+                                 <button class="btn btn-dark" @click="exportTask(email[0], 'email')" class="btn btn-sm btn-outline-danger">Export</button>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+            </div>
+            <div class="col-xl">
+                  <table class="table table-bordered">
+                     <thead>
+                        <tr>
+                           <th><b>Job Descriptions</b></th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr v-for="(jd, i) in jobdescs">
+
+                           <td>
+                              <b>Job title: </b>{jd[1]}
+                              <p><b>Job responsibilities: </b>{jd[2]}
+                              <p><b>Job requirements: </b>{jd[3]}
+                              <p><b>Result: </b>{jd[4]}
+                              <p><small><b>Created at </b>{jd[6]}</small>
+                              <p>
+                                 <button class="btn btn-dark" @click="deleteTask(jd[0], 'jd')" class="btn btn-sm btn-outline-danger">Delete</button>
+                                 <button class="btn btn-dark" @click="exportTask(jd[0], 'jd')" class="btn btn-sm btn-outline-danger">Export</button>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+            </div>
+         </div>
+       </div>
+
+               <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+               <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+               <script type="application/javascript" src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+               <script type="application/javascript" src="../static/script.js"></script>
+
+   </body>
+</html>
